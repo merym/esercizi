@@ -1,0 +1,77 @@
+import java.util.*;
+/*
+ESERCIZIO: come eliminare un elemento da un arraylist di oggetti con boolean remove(object o)-> la funzione usa il metodo equals() che va quindi ridefinito.
+posso usare anche T remove(int) x eliminare un oggetto (che viene ritornato dalla funzione)
+*/
+class Oggetto{
+    private String contenuto;
+    public Oggetto(String contenuto){
+        this.contenuto=contenuto;
+    }
+    public boolean equals(Object o){ // senza questa non puo' funzionare la chiamata remove(Oggetto ()) xke' l'implementazione stdrd di equals() e' == (same address or false) 
+        System.out.print("working on it");
+        if(o.getClass()==this.getClass()){
+            Oggetto oToOgg= (Oggetto) o;
+            if(oToOgg.contenuto==contenuto){
+                System.out.println("true");
+                return true;
+            }
+            else{
+                System.out.println("false");
+                return false;
+            }
+        }
+        else{
+            System.out.println("false");
+            return false;
+        }
+    }
+    public String getContenuto(){
+        return contenuto;
+    }
+}
+
+class DerivatoOggetto extends Oggetto{
+    private int cNumerico;
+    public DerivatoOggetto(String contenuto, int cNumerico){
+        super(contenuto);
+        this.cNumerico= cNumerico;
+    }
+        public boolean equals(Object o){// * non chiamata ma qui x completezza
+        System.out.print("working on it again");
+        if(o.getClass()==this.getClass()){
+            DerivatoOggetto oToDerOgg= (DerivatoOggetto) o;
+            if(super.equals(oToDerOgg) && oToDerOgg.cNumerico==cNumerico){
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+}
+
+public class MyClass {
+    public static void main(String args[]) {
+        ArrayList<Oggetto> obj= new ArrayList<>();
+        Oggetto primo= new Oggetto("primo oggetto");
+        obj.add(primo);
+        obj.add(new Oggetto("a second object"));
+        obj.add(new DerivatoOggetto("a third DERIVED obj", 10));
+        obj.remove(new Oggetto("primo oggetto"));
+        obj.remove(new Oggetto("a third DERIVED obj"));
+        System.out.println("elementi in lista: " + obj);
+/* TEST: PROVA DI EQUALS IN UNA GERARCHIA
+        Oggetto derOgg= new DerivatoOggetto("BLA", 2);
+        //Oggetto derOgg1= new DerivatoOggetto("BLA", 2);
+        //Oggetto derOgg2= new DerivatoOggetto("bla", 2);
+        //System.out.println(derOgg.equals(derOgg1)); // due della stessa classe uguali
+        //System.out.println(derOgg.equals(derOgg2)); // due della stessa classe diversi
+        Oggetto ogg= new Oggetto("BLA");
+        // RITORNA SEMPRE FALSO XKE SONO DI TIPO DINAMICO DIVERSO
+        System.out.println(((DerivatoOggetto)derOgg).equals(ogg)); // due di classi diverse, stesso campo comune derivato.equals(base) NB!!!SENZA LA CONVERSIONE ESPLICITA USA l'equals del TIPO STATICO!!!
+        System.out.println(ogg.equals(derOgg)); // due di classi diverse, stesso campo comune base.equals(derivato)
+*/        
+    }
+}
