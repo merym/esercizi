@@ -6,7 +6,7 @@ le wildcards sono impiegate invece per permettere ad una funzione di accettare c
 -fun(List<?>)-> accetta una lista qualsiasi (potrebbe contenere oggetti di qualsiasi sottotipo di Object)
 -fun(List<? extends TIPO) -> accetta una lista di TIPO o di un qualsiasi sottotipo di TIPO (List<TIPO> e List<SOTTOTIPO> sono entrambe parametri validi)
 -fun(LIst<TIPO>)-> accetta solo liste di TIPO 
-Questo permette di fare funzioni che fanno qualcosa su una lista INDIPENDENTEMENTE dal tipo del parametro di tipo della lista
+Questo permette di fare funzioni che fanno qualcosa su una lista INDIPENDENTEMENTE dal tipo del parametro di tipo della lista.
 */
 class Oggetto{
     private String contenuto;
