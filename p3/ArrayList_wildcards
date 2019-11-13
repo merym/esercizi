@@ -1,0 +1,80 @@
+import java.util.*;
+/*
+ESERCIZIO: uso delle wildcards nella stampa di array list contenenti oggetti di tipi dinamici diversi: ArrayList<Oggetto> ArrayList<? extends Oggetto>
+NB!!!: ogni elemento di un arrayList chiama la PROPRIA (del TD) funzione x compiere le azioni richieste; 
+le wildcards sono impiegate invece per permettere ad una funzione di accettare come parametri liste con parametri di tipo variati in una gerarchia, ad esempio:
+-fun(List<?>)-> accetta una lista qualsiasi (potrebbe contenere oggetti di qualsiasi sottotipo di Object)
+-fun(List<? extends TIPO) -> accetta una lista di TIPO o di un qualsiasi sottotipo di TIPO (List<TIPO> e List<SOTTOTIPO> sono entrambe parametri validi)
+-fun(LIst<TIPO>)-> accetta solo liste di TIPO 
+Questo permette di fare funzioni che fanno qualcosa su una lista INDIPENDENTEMENTE dal tipo del parametro di tipo della lista
+*/
+class Oggetto{
+    private String contenuto;
+    public Oggetto(String contenuto){
+        this.contenuto=contenuto;
+    }
+    public String getContenuto(){
+        return contenuto;
+    }
+    
+    public String tostring(){
+        return new String("this is an object of " + getClass() + " wt contenuto= " + contenuto);
+    }
+}
+
+class DerivatoOggetto extends Oggetto{
+    private int cNumerico;
+    public DerivatoOggetto(String contenuto, int cNumerico){
+        super(contenuto);
+        this.cNumerico= cNumerico;
+    }
+    public String tostring(){
+        return new String(super.tostring() + " e cNumerico= " + cNumerico);
+    }
+}
+
+class ListToString{ // bad way of doing it but this is what i got
+    String DynamicToString(List<? extends Oggetto> arr){
+        String result= new String();
+        for(int i=0; i<arr.size(); i++){
+            result+=(arr.get(i)).tostring()+ "\n";// qui usa il coso
+        }
+        return result;
+    }
+    
+    String ToString(List<Oggetto> arr){
+        String result= new String();
+        for(int i=0; i<arr.size(); i++){
+            result+=(arr.get(i)).tostring()+ "\n";// qui usa il coso
+        }
+        return result;
+    }
+}
+
+public class MyClass {
+    public static void main(String args[]) {
+        //prima lista
+        ArrayList<Oggetto> obj= new ArrayList<>();
+        Oggetto primo= new Oggetto("primo oggetto");
+        obj.add(primo);
+        obj.add(new Oggetto("a second object"));
+        obj.add(new DerivatoOggetto("a third DERIVED obj", 10));
+        //seconda lista
+        ArrayList<DerivatoOggetto> Dobj= new ArrayList<>();
+        Oggetto primoD= new DerivatoOggetto("primo oggetto", 1);
+        Dobj.add((DerivatoOggetto)primoD); // saved in an Oggetto-> NEED THE EXPLICIT CONVERSION
+        Dobj.add(new DerivatoOggetto("a second object", 2));
+        Dobj.add(new DerivatoOggetto("a third DERIVED obj", 10));
+        //crea oggetto di confronto
+        ListToString lts= new ListToString();
+        //prova di stampa con "statico"
+        System.out.println("FUNZIONE SENZA WILDCARD:");
+        System.out.println("elementi in lista1:\n" + lts.ToString(obj));
+        System.out.println("error: incompatible types: ArrayList<DerivatoOggetto> cannot be converted to List<Oggetto>");
+        //System.out.println("\n\nelementi in lista2:\n" + lts.ToString(Dobj)); //-> error: incompatible types: ArrayList<DerivatoOggetto> cannot be converted to List<Oggetto>
+        //prova di stampa con "dinamico"
+        System.out.println("\nFUNZIONE CON WILDCARD:");
+        System.out.println("elementi in lista1:\n" + lts.DynamicToString(obj));
+        System.out.println("elementi in lista2:\n" + lts.DynamicToString(Dobj));
+    }
+}
