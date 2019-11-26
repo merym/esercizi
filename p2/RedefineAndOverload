@@ -1,0 +1,98 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+/*
+NB:
+    ->overload: definisco + comportamenti in una classe con stesso nome, ma diversa segnatura
+        NB: devo evitare che possa esserci ambiguitÃ , ad esempio 1 diverso tipo di ritorno NON Ãˆ SUFFICIENTE
+    ->redifine: dato un metodo in classe base, definisco un metodo con lo stesso nome in classe derivata
+        NB: posso modificare 
+            -parametri
+            -tipo ritorno
+            -visibilitÃ 
+            -const key
+    ->override: dato un metodo marcato virtual in classe base, ridefinsco il comportamento del metodo in classe derivata, 
+                MANTENENDO UGUALE LA SEGNATURA
+*/
+class B{
+    public:
+        void fun()const{
+            cout << "B::fun()\n";
+        }
+        void ridef()const{
+            cout << "B::ridef()\n";
+        }
+        void notConst(){
+            cout << "B::nonConst() is not const";
+        }
+};
+
+class D: public B{
+    public:
+    //non ridefinisco fun
+    //ridefinsco ridef() e ne faccio overload
+    /*// inizio zona che considero attiva x la prima sezione dell es
+    void ridef()const{//con tutto uguale
+        cout << "D::ridef1: uguale a originale x segnatura\n";
+    }
+    
+    void ridef(int i)const{
+        cout << "D::ridef2: " << i << " lista parametri diversa, uguale tipo ritorno\n";
+    }
+    //fine sezione attiva di prima parte
+    */
+    
+    /*NB the problem is that i am making overload wt only diff in the return type!!!  not a ridef problem
+    int ridef()const{
+        cout << "D::ridef3: lista parametri uguale, diverso tipo di ritorno\n";
+    }
+    */
+    /*NB again an OVERLOAD PROBLEM, NOT A REDEFINE, wt D::ridef2
+    int ridef(int i)const{
+        cout << "D::ridef4: " << i << " lista e tipo di ritorno diverso\n";
+        return i;
+    }
+    */
+    //inizio sezione attiva x seconda parte
+    void print(){// NB: logica vuole che fosse const, but we want to show something that does not let that work: redifine wtout const da B::redef
+        ridef();// mantengo la segnatura ma tolgo il const
+    }
+    void notConst()const{
+       cout << "D::nonConst: is redefined const\n";
+    }
+    private:
+    void ridef(){//ridef senza const, diversa visibilitÃ , stessa segnatura; posso tenere anche stessa visibilitÃ  con risultato valido
+        cout << "D::ridef5: no const and private\n";
+    }
+};
+
+int main()
+{
+    cout<<"start\n";
+    B b;
+    D d;
+    //inizio prima sezione es
+    //b.fun();//ok no prob, a b can use it's own function
+    //d.fun();//will it pass? yes... Ã¨ comunque parte della sua interfaccia
+    //b.ridef();//ok usa B::ridef
+    //d.ridef();//ok usa D::ridef1
+    //d.ridef(9);//ok usa D::ridef2
+    //int i= d.ridef();//not ok: an OVERLOAD in a class cannot differentiate only for return type!!!
+    //cout << i << endl;
+    //cout<< d.ridef(9);// not ok: D::ridef2 changes only wt return type, BUT it's a valid redefine for B
+    //fine prima sezione es
+    
+    //inizio seconda sezione
+    //d.ridef();//ok usa D::ridef5 SE PUBBLICA
+    d.print();//ok usa D::ridef5, definita privata x mostrare che posso anche modificare la visibilitÃ  di 1 fun
+    d.notConst();//ok usa D::notConst
+    return 0;
+}
