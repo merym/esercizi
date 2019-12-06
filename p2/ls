@@ -1,2 +1,3 @@
 lista degli es contenuti:
   -redefineAndOverload mostra come funziona l'overload e il redefine in c++
+  -template_and_classes_members mostra come capire cosa serve x compilare in una classe con aiuto template, esempio/reasoning
