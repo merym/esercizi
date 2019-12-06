@@ -1,0 +1,50 @@
+#include <QCoreApplication>
+#include <iostream>
+using namespace std;
+/*
+    objective:
+    dai a Z i membri pubblici x far girare il main (stubbs is fine)
+*/
+class Z{
+public:
+    Z(int i=0){}//(B)-> permits conversion int->T2
+    Z operator++(){return *this;}
+    Z operator++(int){return *this;}
+    bool operator==(const Z & z){return true;}
+};
+
+ostream& operator<<(ostream& os, const Z& z){// NB: avevi dimenticato questo, very OBIOUS NECESS...
+    return os;
+}
+
+template<class T1, class T2=Z>
+class C{
+public:
+    T1 x;
+    T2 * p;
+};
+
+template<class T1, class T2>
+void fun(C<T1, T2>*q){
+    ++(q->p);// either: needs size, but if size=0 still ok
+    if(true==false)
+        cout << ++(q->x);//(A) requires op<<!!!  && (B) requires op<<!!!
+    else
+        cout << q->p;//stampa 1 indirizzo, no prob
+    (q->x)++;//(B) necessita op++
+    if(*(q->p)==q->x)//(A+B) necessita op== && (B) needs la possibilita' di trasformare int in T2
+        *(q->p)=(q->x);// assegnazione x (B) needs int->T2
+    T1 * ptr=&(q->x);// no prob, crea 1 punt di T1 easy wtever is the type
+    T2 t2=q->x;//(B) needs int->T2
+}
+
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+    C<Z> c1;
+    fun(&c1);//FUNZ NEEDED EVIDENZIATE CON (A)
+    C<int> c2;
+    fun(&c2);//FUNZ NEEDED EVIDENZIATE CON (B)
+    return a.exec();
+}
