@@ -1,3 +1,5 @@
 lista degli es contenuti:
   -redefineAndOverload mostra come funziona l'overload e il redefine in c++
   -template_and_classes_members mostra come capire cosa serve x compilare in una classe con aiuto template, esempio/reasoning
+  -es9_2(stampe) mostra le possibili condivisioni di memoria in atto su una classe contenente puntatori nello stato dove non sono
+  state attivate le precauzioni per evitare la condivisione di memoria (manca il copyConstr, presenti op= e ~Dtor)
