@@ -3,3 +3,4 @@ lista degli es contenuti:
   -template_and_classes_members mostra come capire cosa serve x compilare in una classe con aiuto template, esempio/reasoning
   -es9_2(stampe) mostra le possibili condivisioni di memoria in atto su una classe contenente puntatori nello stato dove non sono
   state attivate le precauzioni per evitare la condivisione di memoria (manca il copyConstr, presenti op= e ~Dtor)
+  -es9_3(stampe) mostra come ottenere info & come usarla tramite costr explicit && operator int()
