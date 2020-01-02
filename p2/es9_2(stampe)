@@ -1,0 +1,90 @@
+#include <QCoreApplication>
+#include <iostream>
+using std::cout;
+using std::endl;
+
+/*what does it print?*/
+
+class C{
+public:
+    C(): size(1), a(new int[1]){ a[0]=0;}
+    C& operator=(const C& c){
+        if(this!= &c){
+            size=c.size;
+            a= new int[c.size]; // !! not deleted a??? -> memory lost??? yes, memory lost =/
+            for(int i=0; i<size; i++)
+                a[i]= c.a[i];
+        }
+        return *this;
+    }
+    void add(int i){
+        int* b=a;
+        a=new int[size+1];
+        size++;
+        a[0]=i;
+        for(int i=1; i<size; i++)
+            a[i]= b[i-1];
+        delete b; // if you make a new u gotta make a delete
+    }
+    int& operator[](int i)const{
+        return a[i];
+    }
+    void stampa()const{
+        for(int i=0; i<size; i++)
+            cout << a[i] << " ";
+        cout << endl;
+    }
+    ~C(){
+        stampa();
+        cout << "~C()\n";
+        delete [] a;
+    }
+
+private:
+    int size;
+    int * a;
+};
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+        C v; // v=(0)
+        v.add(1); // v=(1, 0)
+        C w=v; // CopyConstr NOT redefined -> condivisione memoria a: v=w=(1, 0)
+        w[1]=2; //[] is const, ma non cambio a, solo il valore contenuto in a-> v=w=(1, 2)
+        v.stampa();
+        cout << "UNO\n";
+        w.stampa();
+        cout << "DUE\n\n\n";
+        //as expected stampano gli stessi numeri, xke stampano le stesse locazioni di memoria
+
+        C* p= new C; //*p= (0)
+        p->add(3); // *p= (3, 0)
+        *p=v; // usa il op= -> non elimina vecchi dati di p, ma non c'è condivisione di memoria tra p* e v
+        (*p)[0]=4; //*p= (4, 2) ; v=w=(1, 2)
+        v[1]=5; // v=w=(1, 5)
+        v.stampa(); // v=(1, 5)
+        cout << "TRE\n";
+        w.stampa(); // w=(1, 5)
+        cout << "QUATTRO\n";
+        p->stampa(); // *p=(4, 2)
+        cout << "CINQUE\n\n\n";
+        //come atteso continua la condivisione di v e w, *p indipendente
+
+        w=*p; // con op= -> v!=w w!=*p && v=(1, 5), w=(4, 2), p=(4, 2)
+        w[1]= 6; //w=(4, 6)
+        v[0]= 7; //v=(7, 5)
+        v.stampa(); // v=(7, 5)
+        cout << "SEI\n";
+        w.stampa(); // w=(4, 6)
+        cout << "SETTE\n";
+        p->stampa(); // *p=(4, 2)
+        cout << "OTTO\n\n\n";
+        //come atteso: 3 coppie di valori diverse
+
+        delete p; // stampa *p
+        cout << "NOVE\n\n\n";
+
+
+    return app.exec();
+}
