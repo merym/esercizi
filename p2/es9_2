@@ -1,0 +1,27 @@
+#include <QCoreApplication>
+#include <iostream>
+#include <string>
+
+/*stampe?*/
+
+using std::cout;
+using std::endl;
+using std::string;
+
+class C{
+private:
+    int d;
+public:
+    C(string s=""): d(s.size()){} 
+    explicit C(int n): d(n){} // cant be used for int->C
+    operator int(){return d;} //C->int ok
+    C operator+(C x){return C(d+x.d);}
+};
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+    C a, b("pippo"), c(3);// 0, 5, 3
+    cout << a << " " << 1+b << " " << c+4 << " " << c+b;// 0, 6, 7, 8: stampa il result di op int()
+    return app.exec();
+}
